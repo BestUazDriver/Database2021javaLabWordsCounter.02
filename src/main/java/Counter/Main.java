@@ -1,30 +1,18 @@
 package Counter;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import javax.sql.DataSource;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Properties;
+import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
-        Properties properties = new Properties();
-        try {
-            properties.load(new FileReader("src\\main\\Resources\\application.properties"));
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e);
-        }
-        HikariConfig config=new HikariConfig();
-        config.setPassword(properties.getProperty("db.password"));
-        config.setUsername(properties.getProperty("db.user"));
-        config.setDriverClassName(properties.getProperty("db.driver"));
-        config.setJdbcUrl(properties.getProperty("db.url"));
-        config.setMaximumPoolSize(Integer.parseInt(properties.getProperty("db.hikariPoolSize")));
-        DataSource dataSource = new HikariDataSource(config);
-        WordsCounterImpl counter = new WordsCounterImpl();
-        System.out.println("(),.-?!\"");
-        //System.out.println(counter.wordsCount("C:\\Users\\admin\\IdeaProjects\\WOrdsCounter\\src\\main\\java\\Info\\Text"));
+        ApplicationContext context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
+        WordsCounterImpl wordsCounter=context.getBean(WordsCounterImpl.class);
+        String path="C:\\Users\\Пользователь\\JavaFiles\\untilted\\sabitov_itis_2021_lab\\src\\main\\java\\Info\\Text";
+        Map<String, Integer> wordsCount;
+        wordsCount=wordsCounter.wordsCount(path);
+        System.out.println(wordsCount);
+        wordsCounter.dataBase(wordsCount);
     }
 }

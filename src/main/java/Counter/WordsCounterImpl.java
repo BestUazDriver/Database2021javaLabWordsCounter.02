@@ -1,6 +1,8 @@
 package Counter;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.io.BufferedReader;
@@ -8,16 +10,17 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-
+@Component("wordsCounter")
 public class WordsCounterImpl {
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
     public WordsCounterImpl(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     //language=SQL
-    private final String SQL_Save = "insert into words (word, count) values (?,?)";
+    private final String SQL_Save = "insert into wordscount (word, count) values (?,?)";
 
     public Map<String, Integer> wordsCount(String path) {
         HashMap<String, Integer> wordsCount = new HashMap<>();
@@ -42,7 +45,7 @@ public class WordsCounterImpl {
         return wordsCount;
     }
 
-    private void dataBase(Map<String, Integer> wordsCount) {
+    public void dataBase(Map<String, Integer> wordsCount) {
         for (String word : wordsCount.keySet()) {
             jdbcTemplate.update(SQL_Save, word, wordsCount.get(word));
         }
